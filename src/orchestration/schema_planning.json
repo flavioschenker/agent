@@ -1,0 +1,67 @@
+{
+  "title": "OrchestrationDAGPlan",
+  "description": "A Directed Acyclic Graph (DAG) representing a multi-step data analysis plan.",
+  "type": "object",
+  "required": [
+    "plan"
+  ],
+  "properties": {
+    "plan": {
+      "description": "An array of nodes that form the execution graph.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "title": "PlanNode",
+        "description": "A single task node in the analysis plan.",
+        "required": [
+          "node_id",
+          "agent",
+          "task",
+          "dependencies",
+          "input_data",
+          "output_name"
+        ],
+        "properties": {
+          "node_id": {
+            "description": "A unique identifier for this step.",
+            "type": "string"
+          },
+          "agent": {
+            "description": "The specialist agent assigned to execute the task.",
+            "type": "string",
+            "enum": [
+              "DataIngestionAgent",
+              "TimeIntelligenceAgent",
+              "AggregationAgent",
+              "ComparisonAgent",
+              "AdvancedStatisticsAgent",
+              "ReportGenerationAgent"
+            ]
+          },
+          "task": {
+            "description": "A detailed, natural language instruction for the agent.",
+            "type": "string"
+          },
+          "dependencies": {
+            "description": "A list of 'node_id's that must be completed before this node can run.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "input_data": {
+            "description": "A list of 'output_name's from dependency nodes that serve as input for this task.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "output_name": {
+            "description": "The key under which the resulting DataFrame will be stored in the data context.",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
