@@ -1,0 +1,210 @@
+[
+    {
+        "node_id": "step_1_filter_latest_month",
+        "agent": "TimeIntelligenceAgent",
+        "task": "Filter the source data to get the latest month's data.",
+        "dependencies": [],
+        "input_data": [
+            "source"
+        ],
+        "output_name": "latest_month_data"
+    },
+    {
+        "node_id": "step_2_filter_latest_month_minus_one",
+        "agent": "TimeIntelligenceAgent",
+        "task": "Filter the source data to get the data for the month before the latest month.",
+        "dependencies": [],
+        "input_data": [
+            "source"
+        ],
+        "output_name": "latest_month_minus_one_data"
+    },
+    {
+        "node_id": "step_3_filter_ytd",
+        "agent": "TimeIntelligenceAgent",
+        "task": "Filter the source data to get the year-to-date (YTD) data.",
+        "dependencies": [],
+        "input_data": [
+            "source"
+        ],
+        "output_name": "ytd_data"
+    },
+    {
+        "node_id": "step_4_filter_previous_ytd",
+        "agent": "TimeIntelligenceAgent",
+        "task": "Filter the source data to get the previous year-to-date (Previous YTD) data.",
+        "dependencies": [],
+        "input_data": [
+            "source"
+        ],
+        "output_name": "previous_ytd_data"
+    },
+    {
+        "node_id": "step_5_aggregate_latest_month",
+        "agent": "AggregationAgent",
+        "task": "Aggregate the latest month's data by Investment Advisor, Location, Region, and Subregion for brokerage volume and number of transactions.",
+        "dependencies": [
+            "step_1_filter_latest_month"
+        ],
+        "input_data": [
+            "latest_month_data"
+        ],
+        "output_name": "latest_month_aggregated"
+    },
+    {
+        "node_id": "step_6_aggregate_latest_month_minus_one",
+        "agent": "AggregationAgent",
+        "task": "Aggregate the data for the month before the latest month by Investment Advisor, Location, Region, and Subregion for brokerage volume and number of transactions.",
+        "dependencies": [
+            "step_2_filter_latest_month_minus_one"
+        ],
+        "input_data": [
+            "latest_month_minus_one_data"
+        ],
+        "output_name": "latest_month_minus_one_aggregated"
+    },
+    {
+        "node_id": "step_7_aggregate_ytd",
+        "agent": "AggregationAgent",
+        "task": "Aggregate the YTD data by Investment Advisor, Location, Region, and Subregion for brokerage volume and number of transactions.",
+        "dependencies": [
+            "step_3_filter_ytd"
+        ],
+        "input_data": [
+            "ytd_data"
+        ],
+        "output_name": "ytd_aggregated"
+    },
+    {
+        "node_id": "step_8_aggregate_previous_ytd",
+        "agent": "AggregationAgent",
+        "task": "Aggregate the Previous YTD data by Investment Advisor, Location, Region, and Subregion for brokerage volume and number of transactions.",
+        "dependencies": [
+            "step_4_filter_previous_ytd"
+        ],
+        "input_data": [
+            "previous_ytd_data"
+        ],
+        "output_name": "previous_ytd_aggregated"
+    },
+    {
+        "node_id": "step_9_calculate_mtd_change",
+        "agent": "ComparisonAgent",
+        "task": "Calculate the month-to-date (MTD) change in absolute figures for brokerage volume and number of transactions by Region, Location, and Investment Advisor.",
+        "dependencies": [
+            "step_5_aggregate_latest_month",
+            "step_6_aggregate_latest_month_minus_one"
+        ],
+        "input_data": [
+            "latest_month_aggregated",
+            "latest_month_minus_one_aggregated"
+        ],
+        "output_name": "mtd_change"
+    },
+    {
+        "node_id": "step_10_calculate_ytd_change",
+        "agent": "ComparisonAgent",
+        "task": "Calculate the YTD change in absolute figures for brokerage volume and number of transactions by Region, Location, and Investment Advisor.",
+        "dependencies": [
+            "step_7_aggregate_ytd",
+            "step_8_aggregate_previous_ytd"
+        ],
+        "input_data": [
+            "ytd_aggregated",
+            "previous_ytd_aggregated"
+        ],
+        "output_name": "ytd_change"
+    },
+    {
+        "node_id": "step_11_calculate_standard_deviation_mtd",
+        "agent": "AdvancedStatisticsAgent",
+        "task": "Calculate the standard deviation for MTD change in brokerage volume and number of transactions by Regions vs total, Clients within locations, Locations within subregions, and Investment Advisors within location.",
+        "dependencies": [
+            "step_9_calculate_mtd_change"
+        ],
+        "input_data": [
+            "mtd_change"
+        ],
+        "output_name": "std_dev_mtd"
+    },
+    {
+        "node_id": "step_12_calculate_z_scores_mtd",
+        "agent": "AdvancedStatisticsAgent",
+        "task": "Calculate the Z-scores for MTD change in brokerage volume and number of transactions to find outliers by Regions vs Total, Clients within locations, Locations within subregions, and Investment Advisors within location.",
+        "dependencies": [
+            "step_9_calculate_mtd_change",
+            "step_11_calculate_standard_deviation_mtd"
+        ],
+        "input_data": [
+            "mtd_change",
+            "std_dev_mtd"
+        ],
+        "output_name": "z_scores_mtd"
+    },
+    {
+        "node_id": "step_13_check_client_changes",
+        "agent": "AggregationAgent",
+        "task": "Check for changes in the number of clients and aggregate KPIs (brokerage volume and number of transactions) of new and lost clients by Investment Advisor, Location, Subregion, and Region.",
+        "dependencies": [
+            "source"
+        ],
+        "input_data": [
+            "source"
+        ],
+        "output_name": "client_changes"
+    },
+    {
+        "node_id": "step_14_calculate_standard_deviation_ytd",
+        "agent": "AdvancedStatisticsAgent",
+        "task": "Calculate the standard deviation for YTD change in brokerage volume and number of transactions by Regions vs total, Clients within locations, Locations within subregions, and Investment Advisors within location.",
+        "dependencies": [
+            "step_10_calculate_ytd_change"
+        ],
+        "input_data": [
+            "ytd_change"
+        ],
+        "output_name": "std_dev_ytd"
+    },
+    {
+        "node_id": "step_15_calculate_z_scores_ytd",
+        "agent": "AdvancedStatisticsAgent",
+        "task": "Calculate the Z-scores for YTD change in brokerage volume and number of transactions to find outliers by Regions vs Total, Clients within locations, Locations within subregions, and Investment Advisors within location.",
+        "dependencies": [
+            "step_10_calculate_ytd_change",
+            "step_14_calculate_standard_deviation_ytd"
+        ],
+        "input_data": [
+            "ytd_change",
+            "std_dev_ytd"
+        ],
+        "output_name": "z_scores_ytd"
+    },
+    {
+        "node_id": "step_16_generate_report",
+        "agent": "ReportGenerationAgent",
+        "task": "Compile the results into a final report, including key findings, detailed tables, and analysis of significant deviations and changes.",
+        "dependencies": [
+            "step_5_aggregate_latest_month",
+            "step_7_aggregate_ytd",
+            "step_9_calculate_mtd_change",
+            "step_10_calculate_ytd_change",
+            "step_11_calculate_standard_deviation_mtd",
+            "step_12_calculate_z_scores_mtd",
+            "step_13_check_client_changes",
+            "step_14_calculate_standard_deviation_ytd",
+            "step_15_calculate_z_scores_ytd"
+        ],
+        "input_data": [
+            "latest_month_aggregated",
+            "ytd_aggregated",
+            "mtd_change",
+            "ytd_change",
+            "std_dev_mtd",
+            "z_scores_mtd",
+            "client_changes",
+            "std_dev_ytd",
+            "z_scores_ytd"
+        ],
+        "output_name": "final_report"
+    }
+]

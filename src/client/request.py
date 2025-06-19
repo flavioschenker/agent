@@ -8,6 +8,7 @@ def sync_request(messages, guided_json=None, tools=None):
     endpoint = os.getenv("API_ENDPOINT")
     headers = {
         "Content-Type": "application/json",
+        "Api-key": os.getenv("API_KEY"),
     }
     payload = {
         "model": os.getenv("MODEL"),
@@ -25,7 +26,8 @@ def sync_request(messages, guided_json=None, tools=None):
         response = requests.post(
             f"{url}/{endpoint}",
             headers=headers,
-            json=payload
+            json=payload,
+            verify=False,
         )
         response.raise_for_status()
         return response.json()

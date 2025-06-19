@@ -22,12 +22,13 @@ def execute_query():
         tools=tools
     )
     message = response["choices"][0]["message"]
+    print(message)
     role = message["role"]
-    reasoning = message["reasoning_content"]
+    #reasoning = message["reasoning_content"]
     content = message["content"]
     tool_calls = message["tool_calls"]
 
-    print("Reasoning:")
-    print(reasoning)
+    #print("Reasoning:")
+    #print(reasoning)
     print("Content:")
     print(content)    

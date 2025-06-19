@@ -7,25 +7,12 @@
       "parameters": {
         "type": "object",
         "properties": {
-          "file_locations": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "List of file locations to read data from."
-          },
           "query": {
             "type": "string",
             "description": "The polars sql query to be executed.\npolars sql query must use the table name as `self` to refer to the source data.\nSupported functions are:\nAggregate: \n- Avg\n- Count\n- First\n- Last\n- Max\n- Median\n- Min\n- Sum\n- Quantile_count\n- Quantile_disc\n- Stddev\n- Sum\n- Variance\n\nArray: \n- Array_agg\n- Array_contains\n- Array_get\n- Array_length\n- Array_lower\n- Array_mean\n- Array_reverse\n- Array_sum\n- Array_to_string\n- Array_unique\n- Array_upper\n- Unnest\n\nBitwise: \n- Bit_and\n- Bit_count\n- Bit_or\n- Bit_xor\n\nConditional: \n- Coalesce\n- Greatest\n- If\n- Ifnull\n- Least\n- Nullif\n\nMathematical: \n- Abs\n- Cbrt\n- Ceil\n- Div\n- Exp\n- Floor\n- Ln\n- Log2\n- Log10\n- Mod\n- Pi\n- Pow\n- Round\n- Sign\n- Sqrt\n\nString: \n- Bit_length\n- Concat\n- Concat_ws\n- Date\n- Ends_with\n- Initcap\n- Left\n- Length\n- Lower\n- Ltrim\n- Normalize\n- Octet_length\n- Regexp_like\n- Replace\n- Reverse\n- Right\n- Rtrim\n- Starts_with\n- Strpos\n- Strptime\n- Substr\n- Timestamp\n- Upper\n\nTemporal: \n- Date_part\n- Extract\n- Strftime\n\nType: \n- Cast\n- Try_cast\n\nTrigonometric: \n- Acos\n- Acosd\n- Asin\n- Asind\n- Atan\n- Atand\n- Atan2\n- Atan2d\n- Cot\n- Cotd\n- Cos\n- Cosd\n- Degrees\n- Radians\n- Sin\n- Sind\n- Tan\n- Tand\n\n"
-          },
-          "file_type": {
-            "type": "string",
-            "description": "The type of the file to be read. Supported types are csv and parquet",
-            "default": "csv"
           }
         },
         "required": [
-          "file_locations",
           "query"
         ],
         "additionalProperties": false
