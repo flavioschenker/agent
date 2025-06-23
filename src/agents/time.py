@@ -1,14 +1,23 @@
 from src.agents.agent import Agent
+from src.utils import load_text_file
 
 class TimeIntelligenceAgent(Agent):
     def __init__(self):
-        system_prompt = """
-        You are a sophisticated time filter agent.
-        You can identify time data and extract the right time columns from a dataset.
-        """
+        system_prompt = load_text_file("src/agents/system_prompt_time.md")
         super().__init__(system_prompt)
         self.json_schema = {
-
+            "type": "object",
+            "description": "A list of column names.",
+            "properties": {
+                "column_names": {
+                    "type": "array",
+                    "description": "A list of the selected column names.",
+                    "items": {
+                        "type": "string",
+                        "description": "a single column name"
+                    }
+                }
+            }
         }
 
     def __call__(
@@ -23,7 +32,13 @@ class TimeIntelligenceAgent(Agent):
         print("TimeIntelligenceAgent is called an has received the following task:")
         print(task)
 
-        print("doing agents things...")
+        user_prompt = f"""**TASK:** {task}
 
-        agent_result = f"Step {node_id} successfully executed. Generated a new Data Reference called 'Grouped'"
+**COLUMN_LIST:** {schema}"""
+        self.think(
+            user_prompt,
+            self.json_schema
+        )
+
+        agent_result = f"Generated a new Data Reference called 'Grouped'"
         return agent_result

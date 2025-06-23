@@ -1,1 +1,0 @@
-from src.client.request import sync_request

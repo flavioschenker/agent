@@ -1,6 +1,5 @@
 import json
-from src.client import sync_request
-from src.utils import load_text_file, load_json_file
+from src.utils import load_text_file, load_json_file, api_request
 
 def make_plan() -> list:
     system_prompt = load_text_file("src/orchestration/prompt_planning.md")
@@ -17,7 +16,7 @@ def make_plan() -> list:
             "content": user_prompt
         }
     ]
-    response = sync_request(
+    response = api_request(
         messages=messages,
         guided_json=json_schema
     )
